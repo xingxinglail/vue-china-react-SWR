@@ -54,25 +54,26 @@ module.exports = {
         ],
         'import/extensions': 'off',
         'import/no-unresolved': 'off',
-        "comma-spacing": [
+        'comma-spacing': [
             2,
             {
-                "before": false,
-                "after": true
+                'before': false,
+                'after': true
             }
         ],
-        "comma-dangle": [
+        'comma-dangle': [
             2,
-            "never"
+            'never'
         ],
-        "no-console": "off",
-        "space-before-function-paren": [
-            "error",
+        'no-console': 'off',
+        'space-before-function-paren': [
+            'error',
             {
-                "anonymous": "always",
-                "named": "always",
-                "asyncArrow": "always"
+                'anonymous': 'always',
+                'named': 'always',
+                'asyncArrow': 'always'
             }
-        ]
+        ],
+        'import/prefer-default-export': 'off'
     },
 };

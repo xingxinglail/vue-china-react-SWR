@@ -9,9 +9,23 @@ const { resolve } = require('./utils');
 const { getCssLoaders } = require('./cssLoaders');
 const getClientEnvironment = require('./env');
 
-const devMode = process.env.NODE_ENV !== 'production';
+const devMode = process.env.NODE_ENV === 'development';
+const testMode = process.env.NODE_ENV === 'test';
 
 const env = getClientEnvironment(config.publicPath);
+
+const eslintRules = {
+    enforce: 'pre',
+    test: /\.tsx?$/,
+    exclude: /node_modules/,
+    include: [resolve('src')],
+    loader: 'eslint-loader',
+    options: {
+        emitWarning: true, // 这个配置需要打开，才能在控制台输出warning信息
+        emitError: true, // 这个配置需要打开，才能在控制台输出error信息
+        fix: false // 是否自动修复，如果是，每次保存时会自动修复可以修复的部分
+    }
+};
 
 module.exports = {
     entry: {
@@ -25,18 +39,7 @@ module.exports = {
     },
     module: {
         rules: [
-            {
-                enforce: 'pre',
-                test: /\.tsx?$/,
-                exclude: /node_modules/,
-                include: [resolve('src')],
-                loader: 'eslint-loader',
-                options: {
-                    emitWarning: true, // 这个配置需要打开，才能在控制台输出warning信息
-                    emitError: true, // 这个配置需要打开，才能在控制台输出error信息
-                    fix: false // 是否自动修复，如果是，每次保存时会自动修复可以修复的部分
-                }
-            },
+            testMode ? {} : eslintRules,
             {
                 oneOf: [
                     {

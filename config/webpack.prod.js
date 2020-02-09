@@ -12,7 +12,6 @@ const bundleAnalyzerReport = argv.report;
 
 const webpackConfig = merge.smart(baseWebpackConfig, {
     mode: 'production',
-    // devtool: sourceMapsMode,
     entry: {
         app: './src/index.tsx',
         // vendor: ['react', 'react-dom'] // 不变的代码分包

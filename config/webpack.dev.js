@@ -10,6 +10,7 @@ module.exports = merge.smart(baseWebpackConfig, {
         filename: 'js/[name].[hash:8].js',
         publicPath: '/'
     },
+    devtool: 'source-map',
     devServer: {
         host: 'localhost',
         contentBase: resolve('../public'),
