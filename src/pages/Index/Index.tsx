@@ -8,42 +8,48 @@ import IndexList from '../../components/IndexList';
 const Index: React.FC = () => {
     const { search } = useLocation();
     const parseSearch = qs.parse(search);
-    const currentSinger: string = Array.isArray(parseSearch) ? parseSearch[0] : parseSearch?.singer || '7994';
-    const singers = [
+    const currentTab: string = Array.isArray(parseSearch) ? parseSearch[0] : parseSearch?.tab || 'all';
+    const tabs = [
         {
-            id: '7994',
-            label: '周杰伦'
+            key: 'all',
+            label: '全部'
         },
         {
-            id: '9319',
-            label: 'Taylor Swift'
+            key: 'good',
+            label: '精华'
         },
         {
-            id: '83594',
-            label: 'Linkin Park'
+            key: 'weex',
+            label: 'weex'
         },
         {
-            id: '1632',
-            label: 'Blue'
+            key: 'share',
+            label: '分享'
+        },
+        {
+            key: 'ask',
+            label: '问答'
+        },
+        {
+            key: 'job',
+            label: '招聘'
         }
     ];
-
+    console.log('Index');
     return (
         <div className={styles.index}>
             <div className={styles.nav}>
-                {singers.map(singer => (
+                {tabs.map(tab => (
                     <Link
-                        key={singer.id}
-                        className={classnames(styles.tab, { [styles.selected]: singer.id === currentSinger })}
-                        to={`/?singer=${singer.id}`}
+                        key={tab.key}
+                        className={classnames(styles.tab, { [styles.selected]: tab.key === currentTab })}
+                        to={`/?tab=${tab.key}`}
                     >
-                        {singer.label}
+                        {tab.label}
                     </Link>
                 ))}
             </div>
-            <div>
-                {singers.map(singer => singer.id === currentSinger && <IndexList key={singer.id} singer={singer.id} />)}
-            </div>
+            <div>{tabs.map(tab => tab.key === currentTab && <IndexList key={tab.key} tab={tab.key} />)}</div>
         </div>
     );
 };

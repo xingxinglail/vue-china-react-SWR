@@ -4,7 +4,8 @@ import { useSWRPages } from 'swr';
 import useRequest from '../libs/useRequest';
 
 interface IndexList {
-    singer: string;
+    tab: string;
+    limit?: number;
 }
 
 interface Music {
@@ -34,6 +35,24 @@ interface MusicResponse {
     };
 }
 
+interface Topic {
+    id: string;
+    author_id: string;
+    tab: string;
+    content: string;
+    title: string;
+    last_reply_at: string;
+    good: boolean;
+    top: boolean;
+    reply_count: number;
+    visit_count: number;
+    create_at: string;
+    author: {
+        loginname: string;
+        avatar_url: string;
+    };
+}
+
 // const IndexList: React.FC<IndexList> = props => {
 //     const { tab } = props;
 //     const { data } = useRequest<{ data: Topic[] }>({
@@ -53,33 +72,40 @@ interface MusicResponse {
 // };
 
 const IndexList: React.FC<IndexList> = props => {
-    const { singer } = props;
-
-    const { pages, isLoadingMore, isReachingEnd, loadMore } = useSWRPages<number | null, MusicResponse>(
-        singer,
+    const { tab, limit = 15 } = props;
+    console.log(tab);
+    const { pages, isLoadingMore, isReachingEnd, loadMore } = useSWRPages<
+        number | null,
+        { data: Topic[]; page: number }
+    >(
+        tab,
 
         // page component
         ({ offset, withSWR }) => {
             const { data: projects } = withSWR(
                 // use the wrapper to wrap the *pagination API SWR*
                 useRequest({
-                    url: '/music/singer/song/list',
-                    params: { singerId: singer, page: offset || 1 }
+                    // url: '/music/tab/song/list',
+                    url: '/api/v1/topics',
+                    params: { tab, page: offset || 1, limit }
                 })
             );
-
             // you can still use other SWRs outside
             if (!projects) return <p>loading</p>;
 
-            return projects.data.list.map(project => <p key={project.song_id}>{project.title}</p>);
+            return projects.data.map(project => <p key={project.id}>{project.title}</p>);
         },
 
         // one page's SWR => offset of next page
         ({ data }) => {
+            // if (data) {
+            //     const nextPage = data.data.page + 1;
+            //     if (nextPage > data.data.totalPage) return null;
+            //     return nextPage;
+            // }
             if (data) {
-                const nextPage = data.data.page + 1;
-                if (nextPage > data.data.totalPage) return null;
-                return nextPage;
+                if (data.data.length < limit) return null;
+                return data.page + 1;
             }
             return null;
         },
@@ -87,20 +113,24 @@ const IndexList: React.FC<IndexList> = props => {
         // deps of the page component
         []
     );
-    // console.log(page.current);
+
     return (
         <div>
             {pages}
             <button type="button" onClick={loadMore} disabled={isReachingEnd || isLoadingMore}>
-                {/* eslint-disable-next-line no-nested-ternary */}
                 {isLoadingMore ? '. . .' : isReachingEnd ? 'no more data' : 'load more'}
             </button>
         </div>
     );
 };
 
+IndexList.defaultProps = {
+    limit: 15
+};
+
 IndexList.propTypes = {
-    singer: PropTypes.string.isRequired
+    tab: PropTypes.string.isRequired,
+    limit: PropTypes.number
 };
 
 export default React.memo(IndexList);

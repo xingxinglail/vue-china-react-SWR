@@ -1,9 +1,9 @@
 import useSWR, { ConfigInterface, responseInterface } from 'swr';
 import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 
-axios.defaults.baseURL = process.env.REACT_APP_API_ROOT;
-axios.defaults.headers.common['app_id'] = process.env.REACT_APP_API_APP_ID;
-axios.defaults.headers.common['app_secret'] = process.env.REACT_APP_API_APP_SECRET;
+axios.defaults.baseURL = 'https://www.vue-js.com/'; // process.env.REACT_APP_API_ROOT;
+// axios.defaults.headers.common['app_id'] = process.env.REACT_APP_API_APP_ID;
+// axios.defaults.headers.common['app_secret'] = process.env.REACT_APP_API_APP_SECRET;
 
 export type GetRequest = AxiosRequestConfig | null;
 
@@ -33,7 +33,7 @@ export default function useRequest<Data = unknown, Error = unknown>(
     );
 
     return {
-        data: response && response.data,
+        data: response && { ...response.data, page: request?.params.page || 1 },
         response,
         error,
         isValidating,
