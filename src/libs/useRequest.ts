@@ -1,0 +1,42 @@
+import useSWR, { ConfigInterface, responseInterface } from 'swr';
+import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
+
+axios.defaults.baseURL = process.env.REACT_APP_API_ROOT;
+axios.defaults.headers.common['app_id'] = process.env.REACT_APP_API_APP_ID;
+axios.defaults.headers.common['app_secret'] = process.env.REACT_APP_API_APP_SECRET;
+
+export type GetRequest = AxiosRequestConfig | null;
+
+interface Return<Data, Error>
+    extends Pick<responseInterface<AxiosResponse<Data>, AxiosError<Error>>, 'isValidating' | 'revalidate' | 'error'> {
+    data: Data | undefined;
+    response: AxiosResponse<Data> | undefined;
+}
+
+export interface Config<Data = unknown, Error = unknown>
+    extends Omit<ConfigInterface<AxiosResponse<Data>, AxiosError<Error>>, 'initialData'> {
+    initialData?: Data;
+}
+
+console.log(process.env.REACT_APP_API_ROOT);
+
+export default function useRequest<Data = unknown, Error = unknown>(
+    request: GetRequest,
+    { initialData, ...config }: Config<Data, Error> = {}
+): Return<Data, Error> {
+    const { data: response, error, isValidating, revalidate } = useSWR<AxiosResponse<Data>, AxiosError<Error>>(
+        request && JSON.stringify(request),
+        () => axios(request || {}),
+        {
+            ...config
+        }
+    );
+
+    return {
+        data: response && response.data,
+        response,
+        error,
+        isValidating,
+        revalidate
+    };
+}

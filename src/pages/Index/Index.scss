@@ -1,0 +1,13 @@
+.index {
+    .nav {
+        display: flex;
+
+        .tab {
+            padding: 6px 10px;
+
+            &.selected {
+                background-color: #0084ff;
+            }
+        }
+    }
+}

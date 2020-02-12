@@ -22,3 +22,5 @@ config/index.js
 package-lock.json
 laravel-echo-server.json
 deploy.*
+
+.env.*.local
