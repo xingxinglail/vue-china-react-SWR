@@ -1,0 +1,19 @@
+.details {
+    .title {
+        font-size: 30px;
+        padding: 10px;
+    }
+
+    .content {
+        padding: 14px;
+
+        img {
+            margin: 6px 0;
+            max-width: 100%;
+        }
+
+        a {
+            word-break: break-word;
+        }
+    }
+}

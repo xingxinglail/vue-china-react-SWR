@@ -99,7 +99,7 @@ const IndexList: React.FC<IndexList> = props => {
             if (!projects) return <p>loading</p>;
 
             return projects.data.map(project => (
-                <Link className={styles.topic} key={project.id} to="/">
+                <Link className={styles.topic} key={project.id} to={`/topic/${project.id}`}>
                     <img className={styles.avatar} src={project.author.avatar_url} alt="avatar" />
                     <p className={styles.title}>{project.title}</p>
                 </Link>

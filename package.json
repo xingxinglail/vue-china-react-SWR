@@ -8,7 +8,7 @@
 		"build": "cross-env NODE_ENV=production node config/build.js --env=prod",
 		"build:dev": "cross-env NODE_ENV=production node config/build.js --env=dev",
 		"build:test": "cross-env NODE_ENV=production node config/build.js --env=test",
-        "lint": "eslint src --ext .ts,.tsx && stylelint \"./src/**/*.scss\"",
+		"lint": "eslint src --ext .ts,.tsx && stylelint \"./src/**/*.scss\"",
 		"report": "cross-env NODE_ENV=production node config/build.js --env=prod --report",
 		"commit": "git-cz",
 		"test": "cross-env NODE_ENV=test BABEL_ENV=test karma start --single-run",
@@ -22,6 +22,7 @@
 		"@svgr/webpack": "^5.1.0",
 		"@types/chai": "^4.2.8",
 		"@types/classnames": "^2.2.9",
+		"@types/loadable__component": "^5.10.0",
 		"@types/mocha": "^7.0.1",
 		"@types/prop-types": "^15.7.3",
 		"@types/query-string": "^6.3.0",
@@ -96,6 +97,7 @@
 		"webpack-merge": "^4.2.2"
 	},
 	"dependencies": {
+		"@loadable/component": "^5.12.0",
 		"axios": "^0.19.2",
 		"classnames": "^2.2.6",
 		"prop-types": "^15.7.2",

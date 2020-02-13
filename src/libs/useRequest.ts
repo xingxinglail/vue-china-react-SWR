@@ -31,7 +31,7 @@ export default function useRequest<Data = unknown, Error = unknown>(
     );
 
     return {
-        data: response && { ...response.data, page: request?.params.page || 1 },
+        data: response && { ...response.data, page: request?.params?.page || 1 },
         response,
         error,
         isValidating,
