@@ -13,16 +13,14 @@ interface Return<Data, Error>
     response: AxiosResponse<Data> | undefined;
 }
 
-export interface Config<Data = unknown, Error = unknown>
-    extends Omit<ConfigInterface<AxiosResponse<Data>, AxiosError<Error>>, 'initialData'> {
-    initialData?: Data;
-}
-
-console.log(process.env.REACT_APP_API_ROOT);
+// export interface Config<Data = unknown, Error = unknown>
+//     extends Omit<ConfigInterface<AxiosResponse<Data>, AxiosError<Error>>, 'initialData'> {
+//     initialData?: Data;
+// }
 
 export default function useRequest<Data = unknown, Error = unknown>(
     request: GetRequest,
-    { initialData, ...config }: Config<Data, Error> = {}
+    { ...config }: ConfigInterface<AxiosResponse<Data>, AxiosError<Error>> = {}
 ): Return<Data, Error> {
     const { data: response, error, isValidating, revalidate } = useSWR<AxiosResponse<Data>, AxiosError<Error>>(
         request && JSON.stringify(request),

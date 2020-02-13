@@ -3,7 +3,7 @@ import { useLocation, Link } from 'react-router-dom';
 import qs from 'query-string';
 import classnames from 'classnames';
 import styles from './Index.scss';
-import IndexList from '../../components/IndexList';
+import IndexList from '../../components/IndexList/IndexList';
 
 const Index: React.FC = () => {
     const { search } = useLocation();
@@ -35,7 +35,7 @@ const Index: React.FC = () => {
             label: '招聘'
         }
     ];
-    console.log('Index');
+
     return (
         <div className={styles.index}>
             <div className={styles.nav}>
@@ -49,7 +49,7 @@ const Index: React.FC = () => {
                     </Link>
                 ))}
             </div>
-            <div>{tabs.map(tab => tab.key === currentTab && <IndexList key={tab.key} tab={tab.key} />)}</div>
+            {tabs.map(tab => tab.key === currentTab && <IndexList key={tab.key} tab={tab.key} />)}
         </div>
     );
 };

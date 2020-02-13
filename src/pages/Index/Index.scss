@@ -1,12 +1,20 @@
 .index {
     .nav {
+        background-color: #fff;
+        box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 0 4px 0 rgba(0, 0, 0, 0.12);
         display: flex;
+        position: sticky;
+        text-align: center;
+        top: 0;
 
         .tab {
-            padding: 6px 10px;
+            color: #333;
+            flex: 1;
+            padding: 8px 10px;
 
             &.selected {
                 background-color: #0084ff;
+                color: #fff;
             }
         }
     }

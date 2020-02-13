@@ -1,7 +1,9 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { useSWRPages } from 'swr';
-import useRequest from '../libs/useRequest';
+import useRequest from '../../libs/useRequest';
+import styles from './IndexList.scss';
 
 interface IndexList {
     tab: string;
@@ -73,7 +75,7 @@ interface Topic {
 
 const IndexList: React.FC<IndexList> = props => {
     const { tab, limit = 15 } = props;
-    console.log(tab);
+
     const { pages, isLoadingMore, isReachingEnd, loadMore } = useSWRPages<
         number | null,
         { data: Topic[]; page: number }
@@ -84,16 +86,24 @@ const IndexList: React.FC<IndexList> = props => {
         ({ offset, withSWR }) => {
             const { data: projects } = withSWR(
                 // use the wrapper to wrap the *pagination API SWR*
-                useRequest({
-                    // url: '/music/tab/song/list',
-                    url: '/api/v1/topics',
-                    params: { tab, page: offset || 1, limit }
-                })
+                useRequest(
+                    {
+                        // url: '/music/tab/song/list',
+                        url: '/api/v1/topics',
+                        params: { tab, page: offset || 1, limit }
+                    },
+                    { revalidateOnFocus: false }
+                )
             );
             // you can still use other SWRs outside
             if (!projects) return <p>loading</p>;
 
-            return projects.data.map(project => <p key={project.id}>{project.title}</p>);
+            return projects.data.map(project => (
+                <Link className={styles.topic} key={project.id} to="/">
+                    <img className={styles.avatar} src={project.author.avatar_url} alt="avatar" />
+                    <p className={styles.title}>{project.title}</p>
+                </Link>
+            ));
         },
 
         // one page's SWR => offset of next page
@@ -115,8 +125,8 @@ const IndexList: React.FC<IndexList> = props => {
     );
 
     return (
-        <div>
-            {pages}
+        <div className={styles.indexList}>
+            <div className={styles.topicWrapper}>{pages}</div>
             <button type="button" onClick={loadMore} disabled={isReachingEnd || isLoadingMore}>
                 {isLoadingMore ? '. . .' : isReachingEnd ? 'no more data' : 'load more'}
             </button>
