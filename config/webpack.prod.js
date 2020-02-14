@@ -1,7 +1,7 @@
 const merge = require('webpack-merge');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const ScriptExtHtmlWebpackPlugin = require("script-ext-html-webpack-plugin");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const UglifyjsWebpackPlugin = require('uglifyjs-webpack-plugin');
 const CompressionWebpackPlugin = require('compression-webpack-plugin');
 const argv = require('yargs').argv;
 const baseWebpackConfig = require('./webpack.base');
@@ -13,8 +13,7 @@ const bundleAnalyzerReport = argv.report;
 const webpackConfig = merge.smart(baseWebpackConfig, {
     mode: 'production',
     entry: {
-        app: './src/index.tsx',
-        // vendor: ['react', 'react-dom'] // 不变的代码分包
+        app: './src/index.tsx'
     },
     output: {
         filename: 'js/[name].[contenthash:8].js',
@@ -23,49 +22,25 @@ const webpackConfig = merge.smart(baseWebpackConfig, {
         publicPath: config.publicPath
     },
     optimization: {
+        runtimeChunk: 'single',
         splitChunks: {
-            chunks: 'all', // 哪些块进行优化，"initial"|"all"|"async"(默认) (string function)
-            minSize: 30000, // 要生成的块的最小大小，默认30000(30k)
-            minChunks: 2, // 分割前必须共享模块的最小块数，默认1
-            name: true, // 拆分快的名称，默认true(function true string)
+            chunks: "all",
             cacheGroups: {
-                vendors: {
-                    name: 'vendor',
+                vendor: {
+                    name: "vendor",
                     test: /[\\/]node_modules[\\/]/,
-                    priority: -10
+                    priority: 10,
+                    chunks: "initial" // 只打包初始时依赖的第三方
                 },
-                default: {
-                    name: 'common',
-                    minChunks: 2,
-                    priority: -20,
+                commons: {
+                    name: "chunk-commons",
+                    minChunks: 2, // 最小共用次数
+                    priority: 5,
                     reuseExistingChunk: true
                 }
             }
         }
     },
-    // optimization: {
-    //     minimizer: [
-    //         new UglifyjsWebpackPlugin({
-    //             sourceMap: false
-    //         })
-    //     ],
-    //     splitChunks: {
-    //         chunks: 'all',
-    //         minChunks: 2,
-    //         maxInitialRequests: 5,
-    //         cacheGroups: {
-    //             // 提取公共模块
-    //             commons: {
-    //                 chunks: 'all',
-    //                 test: /[\\/]node_modules[\\/]/,
-    //                 minChunks: 2,
-    //                 maxInitialRequests: 5,
-    //                 minSize: 0,
-    //                 name: 'common'
-    //             }
-    //         }
-    //     }
-    // },
     plugins: [
         new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({
@@ -87,13 +62,17 @@ const webpackConfig = merge.smart(baseWebpackConfig, {
                 minifyURLs: true,
             }
         }),
+        new ScriptExtHtmlWebpackPlugin({
+            //`runtime` must same as runtimeChunk name. default is `runtime`
+            inline: /runtime\..*\.js$/
+        }),
         new CompressionWebpackPlugin({
             filename: '[path].gz[query]',
             algorithm: 'gzip',
             test: new RegExp('\\.(' + ['js', 'css'].join('|') + ')$'),
             threshold: 10240, // 大于这个大小的文件才会被压缩
             minRatio: 0.8
-        }),
+        })
     ]
 });
 

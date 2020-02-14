@@ -1,7 +1,14 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import Index from './pages/Index/Index';
-import Details from './pages/Details/Details';
+import loadable from '@loadable/component';
+
+const Index = loadable(() => import('./pages/Index/Index'), {
+    fallback: <div>Loading...</div>
+});
+
+const Details = loadable(() => import('./pages/Details/Details'), {
+    fallback: <div>Loading...</div>
+});
 
 const App = () => (
     <Router>

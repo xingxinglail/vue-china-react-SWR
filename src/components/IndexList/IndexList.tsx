@@ -10,33 +10,6 @@ interface IndexList {
     limit?: number;
 }
 
-interface Music {
-    language: string;
-    publishtime: string;
-    pic_big: string;
-    pic_small: string;
-    country: string;
-    lrclink: string;
-    file_duration: string;
-    si_proxycompany: string;
-    song_id: string;
-    title: string;
-    ting_uid: string;
-    author: string;
-}
-
-interface MusicResponse {
-    code: number;
-    msg: string;
-    data: {
-        page: number;
-        totalCount: number;
-        totalPage: number;
-        limit: number;
-        list: Music[];
-    };
-}
-
 interface Topic {
     id: string;
     author_id: string;
@@ -55,23 +28,19 @@ interface Topic {
     };
 }
 
-// const IndexList: React.FC<IndexList> = props => {
-//     const { tab } = props;
-//     const { data } = useRequest<{ data: Topic[] }>({
-//         url: 'https://www.vue-js.com/api/v1/topics',
-//         params: { tab, page: 1, limit: 10 }
-//     });
-//     if (!data) return <div>Loading..</div>;
-//     return (
-//         <div>
-//             {
-//                 data.data.map(c => (
-//                     <p key={ c.id }>{ c.title }</p>
-//                 ))
-//             }
-//         </div>
-//     );
-// };
+const useScrollBottom = (cb: () => void, deps: unknown[] = [], value = 50): void => {
+    React.useEffect(() => {
+        const doc = document.scrollingElement || { clientHeight: 0, scrollTop: 0, scrollHeight: 0 };
+        const h = doc.clientHeight;
+        const fn = () => {
+            if (doc.scrollTop + h >= doc.scrollHeight - value) cb();
+        };
+        window.addEventListener('scroll', fn);
+        return () => {
+            window.removeEventListener('scroll', fn);
+        };
+    }, deps);
+};
 
 const IndexList: React.FC<IndexList> = props => {
     const { tab, limit = 15 } = props;
@@ -96,7 +65,7 @@ const IndexList: React.FC<IndexList> = props => {
                 )
             );
             // you can still use other SWRs outside
-            if (!projects) return <p>loading</p>;
+            if (!projects) return null;
 
             return projects.data.map(project => (
                 <Link className={styles.topic} key={project.id} to={`/topic/${project.id}`}>
@@ -108,11 +77,6 @@ const IndexList: React.FC<IndexList> = props => {
 
         // one page's SWR => offset of next page
         ({ data }) => {
-            // if (data) {
-            //     const nextPage = data.data.page + 1;
-            //     if (nextPage > data.data.totalPage) return null;
-            //     return nextPage;
-            // }
             if (data) {
                 if (data.data.length < limit) return null;
                 return data.page + 1;
@@ -124,12 +88,14 @@ const IndexList: React.FC<IndexList> = props => {
         []
     );
 
+    useScrollBottom(() => {
+        if (isReachingEnd || isLoadingMore) return;
+        loadMore();
+    }, [isReachingEnd, isLoadingMore]);
     return (
         <div className={styles.indexList}>
             <div className={styles.topicWrapper}>{pages}</div>
-            <button type="button" onClick={loadMore} disabled={isReachingEnd || isLoadingMore}>
-                {isLoadingMore ? '. . .' : isReachingEnd ? 'no more data' : 'load more'}
-            </button>
+            <p>{isLoadingMore ? 'loading. . .' : isReachingEnd ? 'no more data' : 'load more'}</p>
         </div>
     );
 };

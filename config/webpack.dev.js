@@ -1,7 +1,6 @@
 const webpack = require('webpack');
 const merge = require('webpack-merge');
 const baseWebpackConfig = require('./webpack.base');
-const config = require('./config');
 const { resolve } = require('./utils');
 
 module.exports = merge.smart(baseWebpackConfig, {
