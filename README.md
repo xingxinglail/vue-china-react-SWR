@@ -1,6 +1,6 @@
-# react-template
+# vue-china-react-SWR
 
-React + Typescript + Webpack + Eslint
+使用 swr 请求数据
 
 ### `yarn install`
 
