@@ -98,7 +98,7 @@
 	},
 	"dependencies": {
 		"@loadable/component": "^5.12.0",
-		"axios": "^0.19.2",
+		"axios": "^0.21.1",
 		"classnames": "^2.2.6",
 		"prop-types": "^15.7.2",
 		"query-string": "^6.10.1",
